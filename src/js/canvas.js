@@ -43,13 +43,18 @@ function init() {
 
     c.save()
     let awayTeamText = allMatches[match].away_team_country.toUpperCase()
-    c.translate(canvas.width - titleSize * 5, canvas.height - titleSize)
+    c.translate(canvas.width - innerMargin, canvas.height - titleSize)
     c.rotate(-1 * Math.PI)
     c.font = `600 ${titleSize}px 'Helvetica Neue'`
     c.fillStyle = '#000'
     c.textBaseline = 'middle'
-    c.textAlign = 'right'
-    c.fillText(awayTeamText, innerMargin + 50 * size, innerMargin)
+    c.textAlign = 'center'
+
+    c.fillText(
+        awayTeamText,
+        c.measureText(awayTeamText).width / 2 + 50 * size,
+        innerMargin
+    )
     c.restore()
 
     c.save()
@@ -65,7 +70,7 @@ function init() {
     c.restore()
 
     //return
-    //innerMargin = 40 * size
+    innerMargin = 60 * size
 
     //Home Team
     //-------------------
@@ -77,7 +82,9 @@ function init() {
             allMatches[match].home_team_statistics.passes_completed,
         onTarget: allMatches[match].home_team_statistics.on_target,
         offTarget: allMatches[match].home_team_statistics.off_target,
-        colors: getColors(allMatches[match].home_team.code)
+        colors: getColors(allMatches[match].home_team.code),
+        passAccurancy: allMatches[match].home_team_statistics.pass_accuracy,
+        distance: allMatches[match].home_team_statistics.distance_covered
     }
 
     let homeTeamHeight = areaHeight * dataHome.ballPossesions
@@ -98,38 +105,26 @@ function init() {
     // c.arc(center[0], center[1], 5 * size, 0, 2 * Math.PI, true)
     // c.fillStyle = 'red'
     // c.fill()
+    c.translate(20 * size, 60 * size)
+
     c.fillStyle = dataHome.colors[0]
     drawTriange(
         {
-            x: center[0],
-            y: center[1] + 15 * size
+            x: center[0] + 30 * size,
+            y: center[1] + 20 * size
         },
         {
-            x: center[0] + 75 * size,
-            y: center[1] - homePassHeight * dataHome.passesCompleted
+            x: center[0] + 60 * size,
+            y: center[1] - homePassHeight * dataHome.passesCompleted - 20 * size
         },
         {
             x: center[0] - homePassWidth * dataHome.passesCompleted,
-            y: center[1] - homePassHeight * dataHome.passesCompleted
+            y:
+                center[1] -
+                homePassHeight * dataHome.passesCompleted +
+                dataHome.passAccurancy * size
         },
         6
-    )
-
-    c.fillStyle = dataHome.colors[1]
-    drawTriange(
-        {
-            x: center[0],
-            y: center[1]
-        },
-        {
-            x: center[0],
-            y: center[1] - homeTeamHeight + innerMargin * size
-        },
-        {
-            x: center[0] - homeWidthAttempts * dataHome.onTarget,
-            y: center[1] - homeTeamHeight + innerMargin * size
-        },
-        -2
     )
 
     //Away Team
@@ -142,7 +137,9 @@ function init() {
             allMatches[match].away_team_statistics.passes_completed,
         onTarget: allMatches[match].away_team_statistics.on_target,
         offTarget: allMatches[match].away_team_statistics.off_target,
-        colors: getColors(allMatches[match].away_team.code)
+        goals: allMatches[match].away_team.goals,
+        colors: getColors(allMatches[match].away_team.code),
+        distance: allMatches[match].away_team_statistics.distance_covered
     }
 
     let awayTeamHeight = areaHeight * dataAway.ballPossesions
@@ -151,61 +148,100 @@ function init() {
     let awayPassHeight = awayTeamHeight / dataAway.numPasses
 
     c.fillStyle = dataAway.colors[0]
-    c.translate(0, -30 * size)
+    c.translate(15 * size, -40 * size)
     drawTriange(
         {
             x: center[0],
-            y: center[1] - 10 * size
+            y: center[1]
+        },
+        {
+            x: center[0] + 50 * size,
+            y: center[1] + awayPassHeight * dataAway.passesCompleted + 5 * size
+        },
+        {
+            x: Math.max(
+                innerMargin,
+                center[0] - awayPassWidth * dataAway.passesCompleted
+            ),
+            y: center[1] + awayPassHeight * dataAway.passesCompleted + 30 * size
+        },
+        6
+    )
+
+    c.fillStyle = dataHome.colors[1]
+    drawTriange(
+        {
+            x: center[0],
+            y: center[1] + 70 * size
         },
         {
             x: center[0],
-            y: center[1] + awayPassHeight * dataAway.passesCompleted + 15 * size
+            y: center[1] - homeTeamHeight + innerMargin * size
         },
         {
-            x: center[0] - awayPassWidth * dataAway.passesCompleted,
-            y: center[1] + awayPassHeight * dataAway.passesCompleted + 15 * size
+            x: center[0] - homeWidthAttempts * dataHome.onTarget,
+            y: center[1] - homeTeamHeight + innerMargin * size
         },
-        6
+        -2
     )
 
     c.fillStyle = dataAway.colors[1]
     console.log(center[0] - awayWidthAttempts * dataAway.onTarget)
     drawTriange(
         {
-            x: center[0],
-            y: center[1] - 10 * size
+            x: center[0] - 10 * size,
+            y: center[1] - 20 * size
         },
         {
-            x: center[0],
-            y: center[1] + awayTeamHeight + 15 * size
+            x: center[0] - 80 * size,
+            y: center[1] + awayTeamHeight + 10 * size
         },
         {
             x: Math.max(
-                innerMargin + 15 * size,
-                center[0] - awayWidthAttempts * dataAway.onTarget
+                innerMargin + 80 * size,
+                center[0] - awayWidthAttempts * dataAway.onTarget - 80 * size
             ),
-            y: center[1] + awayTeamHeight + 15 * size
+            y: center[1] + awayTeamHeight - 20 * size
         },
         -3
     )
 
-    // const ballPossession = new CoverDistance({
-    //     x: innerMargin,
-    //     y: innerMargin,
-    //     width: gridWidth * 3,
-    //     height: gridHeight * 5,
-    //     data: data.ballPossession,
-    //     color: data.color,
-    //     context: c
-    // })
+    // Distance ball
+    //--------------------
+    //c.translate(-10 * size, -10 * size)
+    drawHashBall(
+        center[0] - 52 * size,
+        center[1] - 52 * size,
+        dataHome.distance * size * 0.7
+    )
+    drawHashBall(center[0], center[1], dataAway.distance * size * 0.7)
+}
 
-    //objects.push(ballPossession)
+function drawHashBall(x, y, radius) {
+    c.save()
+    c.beginPath()
+    c.strokeStyle = 'transparent'
+    c.arc(x, y, radius, 0, 2 * Math.PI)
+    let hashX = x - radius
+    let hashY = y - radius
+    let hashSize = radius
+    c.strokeStyle = '#000'
+    c.clip()
+    c.beginPath()
+    for (let i = 0; i < 30 * size; i++) {
+        c.moveTo(hashX, hashY)
+        c.lineTo(hashX + hashSize * 2, hashY)
+        hashY = hashY + 3 * size
+    }
+    c.stroke()
+    c.restore()
 }
 
 function drawTriange(p1, p2, p3, rotate) {
     c.save()
-    c.rotate((-rotate * Math.PI) / 180)
-    c.translate(0, rotate * 10 * size)
+    //c.translate(canvas.width, canvas.height)
+    //c.rotate((-rotate * Math.PI) / 180)
+    //c.translate(0, rotate * 10 * size)
 
     c.beginPath()
     c.moveTo(p1.x, p1.y)
