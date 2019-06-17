@@ -28,19 +28,20 @@ function init() {
     c.fillStyle = '#000'
     c.textBaseline = 'middle'
     c.textAlign = 'left'
-    c.fillText(homeTeamText, innerMargin + 50 * size, innerMargin)
+    c.fillText(homeTeamText, innerMargin + 30 * size, innerMargin)
 
     c.save()
     c.translate(innerMargin, innerMargin)
     c.rotate(-0.5 * Math.PI)
-    c.font = `${10 * size}px \'Helvetica Neue\'`
+    c.font = `${8 * size}px \'Helvetica Neue\'`
     c.fillStyle = '#000'
     c.textBaseline = 'middle'
     c.textAlign = 'right'
     c.fillText('FRANCE 2019', -25 * size, 0)
-    c.fillText('WOMENS WORLD CUP', -25 * size, 16 * size)
+    c.fillText('WOMENS WORLD CUP', -25 * size, 12 * size)
     c.restore()
 
+    //AWAY
     c.save()
     let awayTeamText = allMatches[match].away_team_country.toUpperCase()
     c.translate(canvas.width - innerMargin, canvas.height - titleSize)
@@ -52,7 +53,7 @@ function init() {
 
     c.fillText(
         awayTeamText,
-        c.measureText(awayTeamText).width / 2 + 50 * size,
+        c.measureText(awayTeamText).width / 2 + 40 * size,
         innerMargin
     )
     c.restore()
@@ -61,11 +62,11 @@ function init() {
     let locationText = allMatches[match].location.toUpperCase()
     c.translate(canvas.width - innerMargin, canvas.height - innerMargin)
     c.rotate(-0.5 * Math.PI)
-    c.font = `${10 * size}px \'Helvetica Neue\'`
+    c.font = `${8 * size}px \'Helvetica Neue\'`
     c.fillStyle = '#000'
     c.textBaseline = 'middle'
     c.textAlign = 'left'
-    c.fillText('JUNE 6 2019', 40 * size, -26 * size)
+    c.fillText('JUNE 6 2019', 40 * size, -22 * size)
     c.fillText(locationText, 40 * size, -10 * size)
     c.restore()
 
