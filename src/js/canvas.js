@@ -83,6 +83,7 @@ function init() {
             allMatches[match].home_team_statistics.passes_completed,
         onTarget: allMatches[match].home_team_statistics.on_target,
         offTarget: allMatches[match].home_team_statistics.off_target,
+        goals: allMatches[match].home_team.goals,
         colors: getColors(allMatches[match].home_team.code),
         passAccurancy: allMatches[match].home_team_statistics.pass_accuracy,
         distance: allMatches[match].home_team_statistics.distance_covered
@@ -96,11 +97,13 @@ function init() {
     //Debug
     let center = [areaWidth - 50 * size, homeTeamHeight]
 
-    if (allMatches[match].winner_code === allMatches[match].away_team.code) {
+    if (allMatches[match].winner_code === allMatches[match].home_team.code) {
         c.translate(canvas.width, 0)
         c.scale(-1, 1)
+    } else if ((allMatches[match].winner_code = 'Draw')) {
+        //c.translate(-90 * size, 0)
+        //
     }
-
     // c.beginPath()
     // //console.log(center)
     // c.arc(center[0], center[1], 5 * size, 0, 2 * Math.PI, true)
@@ -168,12 +171,11 @@ function init() {
         },
         6
     )
-
     c.fillStyle = dataHome.colors[1]
     drawTriange(
         {
             x: center[0],
-            y: center[1] + 70 * size
+            y: center[1] + 70 * size + dataHome.goals * size * 10
         },
         {
             x: center[0],
@@ -191,18 +193,18 @@ function init() {
     drawTriange(
         {
             x: center[0] - 10 * size,
-            y: center[1] - 20 * size
+            y: center[1] + dataAway.goals * size * 10
         },
         {
             x: center[0] - 80 * size,
-            y: center[1] + awayTeamHeight + 10 * size
+            y: center[1] + awayTeamHeight + 10 * size + dataAway.goals * size
         },
         {
             x: Math.max(
                 innerMargin + 80 * size,
                 center[0] - awayWidthAttempts * dataAway.onTarget - 80 * size
             ),
-            y: center[1] + awayTeamHeight - 20 * size
+            y: center[1] + awayTeamHeight - 20 * size + dataAway.goals * size
         },
         -3
     )
