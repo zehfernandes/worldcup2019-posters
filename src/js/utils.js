@@ -15,7 +15,7 @@ function distance(x1, y1, x2, y2) {
 
 function getMatchCode(path) {
     let match = path.match(
-        /\/generativeworldcup2018\/match\/(0?[0-9]|[0-9][0-9])\/(.*)/
+        /\/generativeworldcup2019\/match\/(0?[0-9]|[0-9][0-9])\/(.*)/
     )
 
     if (match) {
@@ -60,10 +60,14 @@ function returnRGBA(color) {
 
 // Screen Resolution
 function calculateWidth(height, size) {
-    const a2Width = 1191 * size
-    const a2Height = 1684 * size
+    const a2Width = 1191
+    const a2Height = 1684
 
     return (a2Width * height) / a2Height
+}
+
+function getAspectRatio(width, height) {
+    return width / height
 }
 
 function cmToPixels(dimensions, dpi = 300) {

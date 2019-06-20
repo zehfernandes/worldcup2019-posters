@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Generative Worldcup Poster 2018</title>
+    <title>Generative Worldcup Poster 2019</title>
 
     <!-- Schema.org -->
     <meta itemprop="name" content="Generative Worldcup Posters">
-    <meta itemprop="url" content="http://zehfernandes.com/generativeworldcup2018/">
-    <meta itemprop="image" content="http://zehfernandes.com/generativeworldcup2018/cover.png">
+    <meta itemprop="url" content="http://zehfernandes.com/generativeworldcup2019/">
+    <meta itemprop="image" content="http://zehfernandes.com/generativeworldcup2019/cover.png">
     <meta itemprop="description"
         content="an experiment with world cup statistics API and canvas to generate abstract patterns for each game.">
 
     <!-- FACEBOOK -->
     <meta property="og:type" content="app" />
     <meta property="og:title" content="Generative Worldcup Posters" />
-    <meta property="og:image" content="http://zehfernandes.com/generativeworldcup2018/cover.png" />
+    <meta property="og:image" content="http://zehfernandes.com/generativeworldcup2019/cover.png" />
     <meta property="og:image:width " content="2396" />
     <meta property="og:image:height " content="1670" />
     <meta property="og:description"
@@ -27,7 +27,7 @@
     <meta name="twitter:title" content="Generative Worldcup Posters" />
     <meta name="twitter:description"
         content="an experiment with world cup statistics API and canvas to generate abstract patterns for each game" />
-    <meta name="twitter:image:src" content="http://zehfernandes.com/generativeworldcup2018/cover.png" />
+    <meta name="twitter:image:src" content="http://zehfernandes.com/generativeworldcup2019/cover.png" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="css/tachyons.min.css">
@@ -39,6 +39,10 @@
 
         .max90 {
             max-width: 90%
+        }
+
+        .minHeight {
+            min-height: 500px
         }
 
         .mobile-title {
@@ -80,28 +84,30 @@
 
 <body class="bg-near-white helvetica black">
 
-    <!-- Topo 
     <div class="mobile-title relative absolute-ns">
         <a href="{{htmlWebpackPlugin.options.links.absoluteURL}}" class="link black hover-red">
             <h2 class="fw7 mb1 mt2 pa0" style="font-size: 2rem; letter-spacing:-0.03rem; line-height: 1.1em">
                 Generative
-                <br/>Worldcup
+                <br />Women's<br /> World Cup
             </h2>
             <span class="garamond i" style="color: #9B9B9B; letter-spacing: -0.03em">(see all posters)</span>
         </a>
     </div>
 
     <ul class="dn db-ns list fl w-20" style="position: absolute; right: 3rem; top: 1.8rem;">
-        <li class="fr dib">
-            <a class="link fw5 black hover-red" href="{{htmlWebpackPlugin.options.links.github}}">Source Code</a>
-        </li>
         <li class="fr dib pr4">
             <a class="link fw5 black hover-red" href="{{htmlWebpackPlugin.options.links.mailto}}">Buy one</a>
         </li>
     </ul>
-    -->
+
 
     <!-- Bottom -->
+    <a id="rotateClick" href="#" class="dn db-ns link f3 black hover-red"
+        style="position: fixed; left: 3rem; bottom: 7.6em;">
+        <span class="pr1">⏅</span> rotate</a>
+    <a id="dataClick" href="{{htmlWebpackPlugin.options.links.absoluteURL}}/data.png" target="_blank"
+        class="dn db-ns link f3 black hover-red" style="position: fixed; left: 3rem; bottom: 4.6em;">
+        <span class="pr1">⏂</span> data</a>
     <a id="prev" href="{{htmlWebpackPlugin.options.links.absoluteURL}}" class="link f3 black db hover-red"
         style="position: fixed; left: 3rem; bottom: 2.8rem;">
         <span class="pr1">←</span> prev</a>
@@ -113,7 +119,7 @@
 
     <div
         style="display: flex; align-items: center; justify-content: center; min-height: 100%; padding-bottom:8em; padding-top:2rem;">
-        <canvas class="max90 max50-ns"
+        <canvas class="max90 max50-ns minHeight"
             style="display: block; box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 20px 0px; box-sizing: border-box;"></canvas>
     </div>
 </body>

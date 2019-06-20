@@ -1,114 +1,66 @@
-import { calculateWidth, getUrlParams, getMatchCode, returnRGBA } from './utils'
+import {
+    calculateWidth,
+    getUrlParams,
+    getMatchCode,
+    returnRGBA,
+    getAspectRatio
+} from './utils'
+import FileSaver from 'file-saver'
 import allMatches from './data/matches.json'
-import listColors from './data/colors.js'
+import filterData from './data/filter'
+import drawText from './shapes/text.js'
+import gridGoal from './shapes/gridGoals'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 const size = 2
 let innerMargin = 70 * size
-canvas.width = calculateWidth(window.innerHeight * size, size)
-canvas.height = window.innerHeight * size
+let isRotated = false
+
+canvas.width = 595.5 * size
+canvas.height = 842 * size
 
 // Implementation
 let areaWidth = canvas.width - innerMargin * 2
 let areaHeight = canvas.height - innerMargin * 2
 
-let objects = []
-function init() {
+function init(count) {
+    c.save()
     c.clearRect(0, 0, canvas.width, canvas.height)
     c.fillStyle = '#fff'
     c.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Text
-    //--------------------
-    let titleSize = 20 * size
-    let homeTeamText = allMatches[match].home_team_country.toUpperCase()
-    c.font = `600 ${titleSize}px 'Helvetica Neue'`
-    c.fillStyle = '#000'
-    c.textBaseline = 'middle'
-    c.textAlign = 'left'
-    c.fillText(homeTeamText, innerMargin + 30 * size, innerMargin)
+    let index = count ? count : match
+    const { dataGeneral, dataHome, dataAway } = filterData(allMatches[index])
 
-    c.save()
-    c.translate(innerMargin, innerMargin)
-    c.rotate(-0.5 * Math.PI)
-    c.font = `${8 * size}px \'Helvetica Neue\'`
-    c.fillStyle = '#000'
-    c.textBaseline = 'middle'
-    c.textAlign = 'right'
-    c.fillText('FRANCE 2019', -25 * size, 0)
-    c.fillText('WOMENS WORLD CUP', -25 * size, 12 * size)
-    c.restore()
-
-    //AWAY
-    c.save()
-    let awayTeamText = allMatches[match].away_team_country.toUpperCase()
-    c.translate(canvas.width - innerMargin, canvas.height - titleSize)
-    c.rotate(-1 * Math.PI)
-    c.font = `600 ${titleSize}px 'Helvetica Neue'`
-    c.fillStyle = '#000'
-    c.textBaseline = 'middle'
-    c.textAlign = 'center'
-
-    c.fillText(
-        awayTeamText,
-        c.measureText(awayTeamText).width / 2 + 40 * size,
-        innerMargin
-    )
-    c.restore()
-
-    c.save()
-    let locationText = allMatches[match].location.toUpperCase()
-    c.translate(canvas.width - innerMargin, canvas.height - innerMargin)
-    c.rotate(-0.5 * Math.PI)
-    c.font = `${8 * size}px \'Helvetica Neue\'`
-    c.fillStyle = '#000'
-    c.textBaseline = 'middle'
-    c.textAlign = 'left'
-    c.fillText('JUNE 6 2019', 40 * size, -22 * size)
-    c.fillText(locationText, 40 * size, -10 * size)
-    c.restore()
-
-    //return
+    // Center Point
     innerMargin = 60 * size
+    let mPosition = 50 * size
+    let center = [areaWidth - mPosition, areaHeight * dataHome.ballPossesions]
 
-    //Home Team
-    //-------------------
-    let dataHome = {
-        ballPossesions:
-            allMatches[match].home_team_statistics.ball_possession / 100,
-        numPasses: allMatches[match].home_team_statistics.num_passes,
-        passesCompleted:
-            allMatches[match].home_team_statistics.passes_completed,
-        onTarget: allMatches[match].home_team_statistics.on_target,
-        offTarget: allMatches[match].home_team_statistics.off_target,
-        goals: allMatches[match].home_team.goals,
-        colors: getColors(allMatches[match].home_team.code),
-        passAccurancy: allMatches[match].home_team_statistics.pass_accuracy,
-        distance: allMatches[match].home_team_statistics.distance_covered
+    //Variations game
+    mPosition = 50 * size + dataGeneral.gameHour * size
+    center[0] = center[0] + dataGeneral.gameHour * size
+
+    if (dataGeneral.winner === dataHome.code) {
+        c.translate(canvas.width, 0)
+        c.scale(-1, 1)
+    } else if (dataGeneral.winner === 'Draw') {
+        center = [
+            areaWidth / 2 + 40 * size,
+            areaHeight * dataHome.ballPossesions
+        ]
     }
 
+    // Home Team
+    //-------------------
     let homeTeamHeight = areaHeight * dataHome.ballPossesions
     let homeWidthAttempts = areaWidth / (dataHome.onTarget + dataHome.offTarget)
     let homePassWidth = (areaWidth - innerMargin) / dataHome.numPasses
     let homePassHeight = homeTeamHeight / dataHome.numPasses
+    let shouldRotate = dataHome.clearances > 10
 
-    //Debug
-    let center = [areaWidth - 50 * size, homeTeamHeight]
-
-    if (allMatches[match].winner_code === allMatches[match].home_team.code) {
-        c.translate(canvas.width, 0)
-        c.scale(-1, 1)
-    } else if ((allMatches[match].winner_code = 'Draw')) {
-        //c.translate(-90 * size, 0)
-        //
-    }
-    // c.beginPath()
-    // //console.log(center)
-    // c.arc(center[0], center[1], 5 * size, 0, 2 * Math.PI, true)
-    // c.fillStyle = 'red'
-    // c.fill()
     c.translate(20 * size, 60 * size)
 
     c.fillStyle = dataHome.colors[0]
@@ -118,59 +70,48 @@ function init() {
             y: center[1] + 20 * size
         },
         {
-            x: center[0] + 60 * size,
+            x: areaWidth - mPosition + 60 * size,
             y: center[1] - homePassHeight * dataHome.passesCompleted - 20 * size
         },
         {
-            x: center[0] - homePassWidth * dataHome.passesCompleted,
+            x: areaWidth - mPosition - homePassWidth * dataHome.passesCompleted,
             y:
                 center[1] -
                 homePassHeight * dataHome.passesCompleted +
                 dataHome.passAccurancy * size
         },
-        6
+        shouldRotate ? `0.0${dataHome.goals}` : 0
     )
 
     //Away Team
     //-------------------
-    let dataAway = {
-        ballPossesions:
-            allMatches[match].away_team_statistics.ball_possession / 100,
-        numPasses: allMatches[match].away_team_statistics.num_passes,
-        passesCompleted:
-            allMatches[match].away_team_statistics.passes_completed,
-        onTarget: allMatches[match].away_team_statistics.on_target,
-        offTarget: allMatches[match].away_team_statistics.off_target,
-        goals: allMatches[match].away_team.goals,
-        colors: getColors(allMatches[match].away_team.code),
-        distance: allMatches[match].away_team_statistics.distance_covered
-    }
-
     let awayTeamHeight = areaHeight * dataAway.ballPossesions
     let awayWidthAttempts = areaWidth / (dataAway.onTarget + dataAway.offTarget)
     let awayPassWidth = areaWidth / dataAway.numPasses
     let awayPassHeight = awayTeamHeight / dataAway.numPasses
 
+    c.translate(0 * size, -30 * size)
+
     c.fillStyle = dataAway.colors[0]
-    c.translate(15 * size, -40 * size)
     drawTriange(
         {
             x: center[0],
             y: center[1]
         },
         {
-            x: center[0] + 50 * size,
+            x: areaWidth - mPosition + 90 * size,
             y: center[1] + awayPassHeight * dataAway.passesCompleted + 5 * size
         },
         {
             x: Math.max(
-                innerMargin,
-                center[0] - awayPassWidth * dataAway.passesCompleted
+                innerMargin + dataAway.tackles * 4 * size,
+                mPosition - awayPassWidth * dataAway.passesCompleted
             ),
             y: center[1] + awayPassHeight * dataAway.passesCompleted + 30 * size
         },
-        6
+        shouldRotate ? `0.0${dataAway.tackles * 2}` : 0
     )
+
     c.fillStyle = dataHome.colors[1]
     drawTriange(
         {
@@ -178,46 +119,115 @@ function init() {
             y: center[1] + 70 * size + dataHome.goals * size * 10
         },
         {
-            x: center[0],
+            x: areaWidth - mPosition,
             y: center[1] - homeTeamHeight + innerMargin * size
         },
         {
-            x: center[0] - homeWidthAttempts * dataHome.onTarget,
+            x: areaWidth - mPosition - homeWidthAttempts * dataHome.onTarget,
             y: center[1] - homeTeamHeight + innerMargin * size
         },
-        -2
+        shouldRotate ? `-0.0${dataHome.goals}` : 0
     )
 
+    // NEW LAYER ORDER
+    if (dataHome.colors[1] === '#FFFFFF') {
+        c.fillStyle = dataAway.colors[0]
+        drawTriange(
+            {
+                x: center[0],
+                y: center[1]
+            },
+            {
+                x: areaWidth - mPosition + 90 * size,
+                y:
+                    center[1] +
+                    awayPassHeight * dataAway.passesCompleted +
+                    5 * size
+            },
+            {
+                x: Math.max(
+                    innerMargin + dataAway.tackles * 4 * size,
+                    mPosition - awayPassWidth * dataAway.passesCompleted
+                ),
+                y:
+                    center[1] +
+                    awayPassHeight * dataAway.passesCompleted +
+                    30 * size
+            },
+            shouldRotate ? `0.0${dataAway.tackles * 2}` : 0
+        )
+    }
+
     c.fillStyle = dataAway.colors[1]
-    console.log(center[0] - awayWidthAttempts * dataAway.onTarget)
     drawTriange(
         {
             x: center[0] - 10 * size,
-            y: center[1] + dataAway.goals * size * 10
+            y: center[1] + size * 10
         },
         {
-            x: center[0] - 80 * size,
-            y: center[1] + awayTeamHeight + 10 * size + dataAway.goals * size
+            x: areaWidth - mPosition - 30 * size,
+            y: center[1] + awayTeamHeight + dataAway.goals * size
         },
         {
             x: Math.max(
                 innerMargin + 80 * size,
-                center[0] - awayWidthAttempts * dataAway.onTarget - 80 * size
+                areaWidth -
+                    mPosition -
+                    awayWidthAttempts * dataAway.onTarget -
+                    80 * size
             ),
             y: center[1] + awayTeamHeight - 20 * size + dataAway.goals * size
         },
-        -3
+        `0.0${dataAway.goals * 2}`
     )
 
     // Distance ball
     //--------------------
-    //c.translate(-10 * size, -10 * size)
+    if (dataGeneral.winner === 'Draw') {
+        c.translate(60 * size, 50 * size)
+    }
     drawHashBall(
-        center[0] - 52 * size,
-        center[1] - 52 * size,
-        dataHome.distance * size * 0.7
+        center[0] - 110 * size,
+        center[1] - 70 * size,
+        dataHome.distance * size * 1
     )
-    drawHashBall(center[0], center[1], dataAway.distance * size * 0.7)
+    drawHashBall(
+        center[0] - 20 * size,
+        center[1] - 10 * size,
+        dataAway.distance * size * 1
+    )
+
+    c.restore()
+    c.save()
+    // Infos
+    //--------------------
+    innerMargin = 70 * size
+    drawText(canvas, dataGeneral, { innerMargin, size })
+
+    gridGoal(canvas, dataHome, {
+        innerMargin,
+        size,
+        direction: 'home'
+    })
+    gridGoal(canvas, dataAway, {
+        innerMargin,
+        size,
+        direction: 'away'
+    })
+
+    // // Debug
+    // //-------------------
+    // console.log(dataHome.passesCompleted, dataHome.numPasses)
+    // console.log(dataAway.passesCompleted, dataAway.numPasses)
+    // // debug
+    // c.beginPath()
+    // c.rect(innerMargin, innerMargin, areaWidth, areaHeight)
+    // c.strokeStyle = 'red'
+    // c.fillStyle = 'transparent'
+    // c.stroke()
+    // c.closePath()
+
+    c.restore()
 }
 
 function drawHashBall(x, y, radius) {
@@ -228,44 +238,34 @@ function drawHashBall(x, y, radius) {
     let hashX = x - radius
     let hashY = y - radius
     let hashSize = radius
-    c.strokeStyle = '#000'
+    c.strokeStyle = 'rgba(0,0,0,0.8)'
     c.clip()
     c.beginPath()
-    for (let i = 0; i < 30 * size; i++) {
+    for (let i = 0; i < 60 * size; i++) {
         c.moveTo(hashX, hashY)
         c.lineTo(hashX + hashSize * 2, hashY)
         hashY = hashY + 3 * size
     }
     c.stroke()
+    c.closePath()
     c.restore()
 }
 
-function drawTriange(p1, p2, p3, rotate) {
+function drawTriange(p1, p2, p3, rotateString) {
     c.save()
-    //c.translate(canvas.width, canvas.height)
-    //c.rotate((-rotate * Math.PI) / 180)
+    let rotate = parseFloat(rotateString) - 0.01
+    c.translate(p1.x - rotate * 10 * size, p1.y + rotate * 20 * size)
+    c.rotate(-rotate * Math.PI)
     //c.translate(0, rotate * 10 * size)
 
     c.beginPath()
-    c.moveTo(p1.x, p1.y)
-    c.lineTo(p2.x, p2.y)
-    c.lineTo(p3.x, p3.y)
+    c.moveTo(0, 0)
+    c.lineTo(p2.x - p1.x, p2.y - p1.y)
+    c.lineTo(p3.x - p1.x, p3.y - p1.y)
     c.fill()
+    c.closePath()
 
     c.restore()
-}
-
-function getColors(code) {
-    return listColors[code]
-}
-
-// Animation Loop
-function animate() {
-    //requestAnimationFrame(animate)
-    //c.clearRect(0, 0, canvas.width, canvas.height)
-    objects.forEach(object => {
-        object.update()
-    })
 }
 
 //------------------
@@ -273,15 +273,12 @@ function animate() {
 // ------------------
 const next = document.getElementById('next')
 const prev = document.getElementById('prev')
+const rotateClick = document.getElementById('rotateClick')
 
 let match = getUrlParams(window.location.href).match
 if (!match) {
     match = getMatchCode(window.location.pathname)
 }
-
-console.log(
-    `${allMatches[match].home_team.code} x ${allMatches[match].away_team.code}`
-)
 
 //Next
 let nIndex = parseInt(match) + 1
@@ -321,13 +318,62 @@ addEventListener('keydown', function(event) {
     }
 })
 
+rotateClick.addEventListener('click', function(event) {
+    if (isRotated) {
+        canvas.style =
+            'transform: scale(1); box-shadow: rgba(0,0,0,.15) 3px 3px 20px 0'
+        isRotated = false
+    } else {
+        canvas.style =
+            'transform: scale(-1); box-shadow: rgba(0,0,0,.15) -3px -3px 20px 0'
+        isRotated = true
+    }
+
+    event.preventDefault()
+})
+
 //------------------
-// START
+// Generate
 // ------------------
 
-// const fontA = new FontFaceObserver('Timmons NY')
-// const fontB = new FontFaceObserver('Dharma Gothic E')
-// Promise.all([fontA.load(), fontB.load()]).then(function() {
+// let count = 29
+// let jsonTemplate = []
+
+// function generateDraw() {
+//     if (allMatches[count].status != 'completed') {
+//         console.log(JSON.stringify(jsonTemplate))
+//         return
+//     }
+
+//     init(count)
+
+//     setTimeout(() => {
+//         canvas.toBlob(function(blob) {
+//             let fileName = `${allMatches[count].home_team.code}-${
+//                 allMatches[count].away_team.code
+//             }.png`
+//             FileSaver.saveAs(blob, fileName)
+
+//             let matchStage = allMatches[count].stage_name
+//             let url = `/match/${count}/${
+//                 allMatches[count].home_team_country
+//             }-vs-${allMatches[count].away_team_country}`
+
+//             if (jsonTemplate[matchStage] === undefined) {
+//                 jsonTemplate[matchStage] = []
+//             }
+//             jsonTemplate[matchStage].push({
+//                 file: fileName,
+//                 url: url
+//             })
+
+//             count = count + 1
+//             generateDraw()
+//         })
+//     }, 2000)
+// }
+
+// generateDraw()
+//let interval = setInterval(generateDraw, 10000)
+
 init()
-animate()
-// })

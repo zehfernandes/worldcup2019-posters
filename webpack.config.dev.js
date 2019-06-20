@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const listJson = require('./src/js/data/list.json')
 const links = {
     absoluteURL: 'http://localhost:3000',
-    github: 'https://github.com/zehfernandes/worldcup2018-posters',
+    github: 'https://github.com/zehfernandes/worldcup2019-posters',
     mailto:
         'mailto:ozehfernandes@gmail.com?subject=I want a world cup posters ☝️&body=(send an email if you are interested in buying and soon I will answer you with price and print options.)'
 }

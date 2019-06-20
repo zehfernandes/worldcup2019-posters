@@ -7,8 +7,8 @@ const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 
 const listJson = require('./src/js/data/list.json')
 const links = {
-    absoluteURL: 'http://zehfernandes.com/generativeworldcup2018',
-    github: 'https://github.com/zehfernandes/worldcup2018-posters',
+    absoluteURL: 'http://zehfernandes.com/generativeworldcup2019',
+    github: 'https://www.instagram.com/generativeworldcup/',
     mailto:
         'mailto:ozehfernandes@gmail.com?subject=I want a world cup posters ☝️&body=(send an email if you are interested in buying and soon I will answer you with price and print options.)'
 }
