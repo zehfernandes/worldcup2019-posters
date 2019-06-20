@@ -1,9 +1,9 @@
-# Generative WorldCup
+# Generative Women's World Cup 2019
 
-Generative WorldCup. is an experiment with word cup statistics API and `canvas` to generate abstract patterns for each game. After the match, you can check a new poster in the gallery below.
+Generative World Cup 2019. Lovely posters to amazing women. An new experiment with game stats and abstract patterns. Created in collaboration with [Karina Siqueira](http://www.karinasirqueira.com/).
 
 <div>
-    <img src="https://www.dropbox.com/s/yvhch7p4j26zerf/DgaqvdfW4AA9f8H.jpg?raw=1" width="100%" />
+    <img src="http://zehfernandes.com/generativeworldcup2019/data.png" width="100%" />
 </div>
 
 <br/>
