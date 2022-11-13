@@ -15,7 +15,7 @@
     },
     {
       "file": "KOR-NOR.png",
-      "url": "/match/27/Korea Republic-vs-Norway"
+      "url": "/match/27/Korea-Republic-vs-Norway"
     },
     {
       "file": "NGA-FRA.png",
@@ -39,7 +39,7 @@
     },
     {
       "file": "CAN-NZL.png",
-      "url": "/match/21/Canada-vs-New Zealand"
+      "url": "/match/21/Canada-vs-New-Zealand"
     },
     {
       "file": "NED-CMR.png",
@@ -75,7 +75,7 @@
     },
     {
       "file": "NGA-KOR.png",
-      "url": "/match/12/Nigeria-vs-Korea Republic"
+      "url": "/match/12/Nigeria-vs-Korea-Republic"
     },
     {
       "file": "USA-THA.png",
@@ -115,16 +115,36 @@
     },
     {
       "file": "ESP-RSA.png",
-      "url": "/match/2/Spain-vs-South Africa"
+      "url": "/match/2/Spain-vs-South-Africa"
     },
     {
       "file": "GER-CHN.png",
-      "url": "/match/1/Germany-vs-China PR"
+      "url": "/match/1/Germany-vs-China-PR"
     },
-    { "file": "FRA-KOR.png", "url": "/match/0/France-vs-Korea Republic" }
+    { "file": "FRA-KOR.png", "url": "/match/0/France-vs-Korea-Republic" }
   ],
-  "round_of_16": [],
-  "quarter_finals": [],
-  "semi_finals": [],
-  "finals": []
+  "round_of_16": [
+    { "file": "GER-NGA.png", "url": "/match/36/Germany-vs-Nigeria" },
+    { "file": "NOR-AUS.png", "url": "/match/37/Norway-vs-Australia" },
+    { "file": "ENG-CMR.png", "url": "/match/38/England-vs-Cameroon" },
+    { "file": "FRA-BRA.png", "url": "/match/39/France-vs-Brazil" },
+    { "file": "ESP-USA.png", "url": "/match/40/Spain-vs-USA" },
+    { "file": "ITA-CHN.png", "url": "/match/41/Italy-vs-China-PR" },
+    { "file": "NED-JPN.png", "url": "/match/42/Netherlands-vs-Japan"},
+    { "file": "SWE-CAN.png", "url": "/match/43/Sweden-vs-Canada" }
+  ],
+  "quarter_finals": [
+    { "file": "NOR-ENG.png", "url": "/match/44/Norway-vs-England" },
+    { "file": "FRA-USA.png", "url": "/match/45/France-vs-USA" },
+    { "file": "ITA-NED.png", "url": "/match/46/Italy-vs-Netherlands" },
+    { "file": "GER-SWE.png", "url": "/match/47/Germany-vs-Sweden" }
+  ],
+  "semi_finals": [
+    { "file": "ENG-USA.png", "url": "/match/48/England-vs-USA" },
+    { "file": "NED-SWE.png", "url": "/match/49/Netherlands-vs-Sweden" }
+  ],
+  "finals": [
+    { "file": "ENG-SWE.png", "url": "/match/50/England-vs-Sweden" },
+    { "file": "USA-NED.png", "url": "/match/51/USA-vs-Netherlands" }
+  ]
 }
